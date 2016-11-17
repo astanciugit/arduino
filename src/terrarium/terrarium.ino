@@ -1,6 +1,8 @@
 #define DEBUG
-
 #include "DHT.h"
+#include <TimeAlarms.h>
+#include "log.h"
+
 
 #define DHTPIN 2        // what digital pin we're connected to
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
