@@ -1,17 +1,19 @@
+#include "DHT.h"
+#include <Time.h>
+#include <TimeLib.h>
+//#include <TimeAlarms.h>
+
 #define DEBUG
 #define CONST_VER "0.1.1"
-
-#include "DHT.h"
-//#include <TimeAlarms.h>
-//#include "log.h"
 
 /* DHT DEFS & VARIABLES */
 #define DHTPIN 2        // what digital pin we're connected to
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 DHT dht(DHTPIN, DHTTYPE);
-float _hum;
-float _temp;
-float _hic;
+float _hum = NAN;
+float _temp = NAN;
+float _hic = NAN;
+//=======   /* END OF: DHT DEFS & VARIABLES */
 
 /* RELAY DEFS & VARIABLES */
 #define RELAY_PIN1 14  // Relay 1 PIN (D5)
@@ -24,13 +26,25 @@ bool r1_status = false;
 bool r2_status = false;
 bool r3_status = false;
 bool r4_status = false;
+//=======   /* END OF: RELAY DEFS & VARIABLES */
 
+/* TIMER DEFS & VARIABLES */
+extern "C" {
+  #include "user_interface.h"
+}
+os_timer_t myTimer;
+const int _timerPeriod = 500;
+int _timerCounter = 0;
+bool _tickOccured = false;
+bool _ledStatus = false;
+//=======   /* END OF: TIMER DEFS & VARIABLES */
 
 void setup() {
 #ifdef DEBUG
   Serial.begin(115200);
 #endif
 
+  setTime(6, 59, 0, 1, 1, 0); // (hh,mm,ss,MM,dd,yy) set time to Saturday 06:59:00am Jan 1 2000
   dht.begin();
 
   pinMode(LED_BUILTIN, OUTPUT);     // Initialize the LED_BUILTIN pin as an output for LED blink;
@@ -38,6 +52,11 @@ void setup() {
   pinMode(RELAY_PIN2, OUTPUT); digitalWrite(RELAY_PIN2, OFF);
   pinMode(RELAY_PIN3, OUTPUT); digitalWrite(RELAY_PIN3, OFF);
   pinMode(RELAY_PIN4, OUTPUT); digitalWrite(RELAY_PIN4, OFF);
+
+  os_timer_setfn(&myTimer, timerCallback, NULL);
+  os_timer_arm(&myTimer, _timerPeriod, true);
+
+  delay(1000);
 
 #ifdef DEBUG
   testRelay();
@@ -53,6 +72,21 @@ void loop() {
 
   delay(500);
 }
+
+// start of timerCallback
+// NOTE: do not use Serial.println() in callback function
+void timerCallback(void *pArg) {
+  os_intr_lock();
+  if (_timerCounter == 10) {
+    _timerCounter = 0;
+    _tickOccured = true;
+  }
+  ++_timerCounter;
+  _ledStatus = !_ledStatus;
+  digitalWrite(LED_BUILTIN, _ledStatus);
+  os_intr_unlock();
+} // End of [timerCallback]
+
 
 void check_temperature() {
   _hum = dht.readHumidity();
@@ -101,7 +135,10 @@ void setRelay(int num, uint8_t v) {
 } // END of [setRelay]
 
 void test() {
-  debugPrintTemperature();
+#ifdef DEBUG
+  debugPrintNow();
+  debugPrintTemperature(); Serial.println();
+#endif
 }
 
 void testRelay() {
@@ -121,7 +158,20 @@ void debugPrintTemperature() {
     Serial.print("Failed to read from DHT sensor!");
     return;
   }
+}
 
-  Serial.println();
+
+
+void debugPrintNow() {
+#ifdef DEBUG
+  Serial.print("[");
+  Serial.print(year()); Serial.print("-");
+  Serial.print(month()); Serial.print("-");
+  Serial.print(day()); Serial.print(" ");
+  Serial.print(hour()); Serial.print(":");
+  Serial.print(minute()); Serial.print(":");
+  Serial.print(second()); Serial.print(" ");
+  Serial.print("] ");
+#endif
 }
 
