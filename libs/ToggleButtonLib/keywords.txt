@@ -1,0 +1,7 @@
+--- keywords.txt ---
+ToggleButtonManager	KEYWORD1
+init	KEYWORD2
+registerButton	KEYWORD3
+checkStatuses	KEYWORD4
+getButtonStatus	KEYWORD5
+---
