@@ -29,6 +29,8 @@ bool _ledStatus = false;
 /* BUTTONS DEFS & VARIABLES */
 #define BTN_PIN1 5  // pushbutton 1 (GPIO3 D1) - UV & daytime lamps;
 #define BTN_PIN2 4  // pushbutton 2 (GPIO1 D2) - IR nightime lamp;
+#define BTN1 0
+#define BTN2 1
 ToggleButtonManager _btnManager;
 //=======   /* END OF: BUTTONS DEFS & VARIABLES */
 
@@ -46,8 +48,10 @@ void setup() {
   Serial.println("PINs was setup successfull...");
 
   _btnManager.init(2);
-  _btnManager.registerButton(1, BTN_PIN1);
-  _btnManager.registerButton(2, BTN_PIN2);
+  _btnManager.registerButton(BTN1, BTN_PIN1);
+  _btnManager.registerButton(BTN2, BTN_PIN2);
+  //_btnManager.registerButton(BTN1, BTN_PIN1, handleButton);
+  //_btnManager.registerButton(BTN2, BTN_PIN2, handleButton);
 
   os_timer_setfn(&myTimer, (os_timer_func_t *)timerCallback, NULL);
   os_timer_arm(&myTimer, _timerPeriod, true);
@@ -56,7 +60,8 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-
+  check_button();
+  delay(250);
 }
 
 // start of timerCallback
@@ -65,6 +70,7 @@ void timerCallback(void *pArg) {
   os_intr_lock();
     _tickOccured = true;
     _ledStatus = !_ledStatus;
+    _btnManager.checkStatuses();
     digitalWrite(LED_BUILTIN, _ledStatus);
   os_intr_unlock();
 } // End of [timerCallback]
@@ -76,11 +82,11 @@ void handleButton(int id, bool val) {
 } // End of [handleButton]
 
 int check_button() {
-  _btnManager.checkStatuses();
-  bool status1 = _btnManager.getButtonStatus(1);
-  setRelay(1, status1);
-  bool status2 = _btnManager.getButtonStatus(2);
-  setRelay(2, status2);
+  bool status1 = _btnManager.getButtonStatus(BTN1);
+  setRelay(1, status1 ? ON : OFF);
+  bool status2 = _btnManager.getButtonStatus(BTN2);
+  setRelay(2, status2 ? ON : OFF);
+  Serial.print("status1="); Serial.print(status1); Serial.print("; status2="); Serial.print(status2); Serial.println();
 }
 
 void setRelay(int num, uint8_t v) {

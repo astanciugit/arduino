@@ -85,8 +85,8 @@ void setup() {
   pinMode(RELAY_PIN3, OUTPUT); digitalWrite(RELAY_PIN3, OFF);
   pinMode(RELAY_PIN4, OUTPUT); digitalWrite(RELAY_PIN4, OFF);
 
-  pinMode(BTN_PIN1, INPUT); digitalWrite(BTN_PIN1, OFF);
-  pinMode(BTN_PIN2, INPUT); digitalWrite(BTN_PIN2, OFF);
+  pinMode(BTN_PIN1, INPUT); //digitalWrite(BTN_PIN1, OFF);
+  pinMode(BTN_PIN2, INPUT); //digitalWrite(BTN_PIN2, OFF);
 
   Serial.println("PINs was setup successfull...");
 
