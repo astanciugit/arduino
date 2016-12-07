@@ -1,7 +1,7 @@
 #include <ToggleButtonLib.h>
 
 #define DEBUG
-#define CONST_VER "0.1.1"
+#define CONST_VER "0.2.1"
 
 /* RELAY DEFS & VARIABLES */
 #define RELAY_PIN1 14  // Relay 1 PIN (D5)
