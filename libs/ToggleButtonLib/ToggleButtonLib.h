@@ -15,7 +15,7 @@ class ToggleButtonManager
 		ToggleButtonManager();
 		void init(int capacity);
 		void registerButton(int id, int pin);
-//		void registerButton(int id, int pin, void (*f)(int, bool));
+		void registerButton(int id, int pin, void (*f)(int, bool));
 		void checkStatuses();
 		bool getButtonStatus(int id);
 
@@ -23,9 +23,9 @@ class ToggleButtonManager
 		unsigned const long debounceDelay = 50;    // the debounce time; increase if the output flickers
 
 	private:
-		int const _capaciry = 4;
+		int const _capacity = 4;
+		int _counter = 0;
 		ToggleButton *_buttons[4] = {};
 };
-
 
 #endif

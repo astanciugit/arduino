@@ -13,8 +13,9 @@ class ToggleButton
 		ToggleButton();
 		ToggleButton(int id, int pin);
 		ToggleButton(int id, int pin, void(*f)(int, bool));
-		int _id = 0;
-		int _pin = 0;
+
+		int _id = -1;
+		int _pin = -1;
 		bool _buttonState = false;
 		bool _lastButtonState = false;
 		bool _canProcessButtonState = false;
