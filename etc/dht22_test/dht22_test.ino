@@ -1,7 +1,7 @@
 #include "DHT.h"
 
-#define DHTPIN 2        // what digital pin we're connected to
-#define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
+#define DHTPIN 2          // DHT PIN (GPIO2 D4)
+#define DHTTYPE DHT22     // DHT 22  (AM2302), AM2321
 //#define DHTTYPE DHT11   // DHT 11
 
 //os_timer_t myTimer;

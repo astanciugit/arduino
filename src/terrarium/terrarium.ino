@@ -7,7 +7,7 @@
 #define CONST_VER "0.1.1"
 
 /* DHT DEFS & VARIABLES */
-#define DHTPIN 2        // what digital pin we're connected to
+#define DHTPIN 2        // DHT PIN: (GPIO2  D4)
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 DHT dht(DHTPIN, DHTTYPE);
 float _hum = NAN;
