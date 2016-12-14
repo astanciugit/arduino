@@ -3,22 +3,44 @@
 // SwitchDoc Labs  October 2015
 //
 
+// ===========   TIMER DEFINITION
 extern "C" {
   #include "user_interface.h"
 }
+os_timer_t _myTimer;
+bool _tickOccured;
+bool _ledStatus = false;
+unsigned int _timerDelay = 50;
+unsigned int _ledDelay = 500;
+// ===========   END OF TIMER DEFINITION
 
-os_timer_t myTimer;
-bool tickOccured;
-bool ledStatus = false;
+// ===========   TIMER COUNTERS
+unsigned int _ms = 0;   // timer last checked value, milliseconds
+unsigned int _ledDelayCounter = 0;  // LED timer last value, milliseconds
+// ===========   END OFTIMER COUNTERS
+
 
 // start of timerCallback
 // NOTE: do not use Serial.println() in callback function
 void timerCallback(void *pArg) {
   os_intr_lock();
-    tickOccured = true;
-    ledStatus = !ledStatus;
+    _tickOccured = true;
+    checkTimer();
   os_intr_unlock();
 } // End of timerCallback
+
+void checkTimer() {
+  // Milliseconds will overflow (go back to zero), after approximately 50 days.
+  // https://www.arduino.cc/en/Reference/Millis
+  unsigned int ms = millis();
+  if (ms - _ms < 0 || _ms == 0) {
+    _ms = ms;
+    _ledDelayCounter = _ms;
+  } else {
+    _ms = ms;
+  }
+}
+
 
 void user_init(void) {
 /*
@@ -37,7 +59,7 @@ void user_init(void) {
     The callback function should have the signature: void (*functionName)(void *pArg)
     The pArg parameter is the value registered with the callback function.
 */
-     os_timer_setfn(&myTimer, timerCallback, NULL);
+     os_timer_setfn(&_myTimer, timerCallback, NULL);
 
 /*
     os_timer_arm -  Enable a millisecond granularity timer.
@@ -53,7 +75,7 @@ void user_init(void) {
       The repeat parameter is whether or not the timer will restart once it has reached zero.
 */
 
-    os_timer_arm(&myTimer, 1000, true);
+    os_timer_arm(&_myTimer, _timerDelay, true);
 } // End of user_init
 
 void setup() {
@@ -67,16 +89,21 @@ void setup() {
   Serial.println("--------------------------");
 
   pinMode(LED_BUILTIN, OUTPUT);     // Initialize the LED_BUILTIN pin as an output for LED blink;
-  tickOccured = false;
+  _tickOccured = false;
   user_init();
 }
 
 void loop() {
-  if (tickOccured == true)
+  if (_tickOccured == true)
   {
     Serial.println("Tick Occurred");
-    tickOccured = false;
-    digitalWrite(LED_BUILTIN, ledStatus ? HIGH : LOW);
+    _tickOccured = false;
+    if ((_ms - _ledDelayCounter) >= _ledDelay) {
+      _ledStatus = !_ledStatus;
+      _ledDelayCounter = _ms;
+      digitalWrite(LED_BUILTIN, _ledStatus ? HIGH : LOW);
+      Serial.println("===========   LED blink!!!");
+    }
   }
 
   yield();  // or delay(0);
