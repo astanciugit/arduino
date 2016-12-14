@@ -116,7 +116,6 @@ void loop() {
 
     if (_tickOccured == true) {
       _tickOccured = false;
-      checkTimer();
   
       if ((_ms - _ledDelayCounter) >= _ledDelay) {
         _ledStatus = !_ledStatus;
@@ -138,6 +137,7 @@ void loop() {
 void timerCallback(void *pArg) {
   os_intr_lock();
     _tickOccured = true;
+    checkTimer();
   os_intr_unlock();
 } // End of timerCallback
 
