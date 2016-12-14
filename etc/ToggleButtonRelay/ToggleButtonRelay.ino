@@ -4,10 +4,10 @@
 #define CONST_VER "0.2.1"
 
 /* RELAY DEFS & VARIABLES */
-#define RELAY_PIN1 14  // Relay 1 PIN (GPIO14	D5)
-#define RELAY_PIN2 12  // Relay 2 PIN (GPIO12	D6)
-#define RELAY_PIN3 13  // Relay 3 PIN (GPIO13	D7)
-#define RELAY_PIN4 15  // Relay 4 PIN (GPIO15	D8)
+#define RELAY_PIN1 14  // Relay 1 PIN (GPIO14  D5)
+#define RELAY_PIN2 12  // Relay 2 PIN (GPIO12 D6)
+#define RELAY_PIN3 13  // Relay 3 PIN (GPIO13 D7)
+#define RELAY_PIN4 15  // Relay 4 PIN (GPIO15 D8)
 #define ON  LOW   // Relay ON signal
 #define OFF HIGH  // Relay OFF signal
 bool r1_status = false;
@@ -29,8 +29,8 @@ bool _ledStatus = false;
 //=======   /* END OF: TIMER DEFS & VARIABLES */
 
 /* BUTTONS DEFS & VARIABLES */
-#define BTN_PIN1 5  // pushbutton 1 PIN (GPIO5	D1) - UV & daytime lamps;
-#define BTN_PIN2 4  // pushbutton 2 PIN (GPIO4	D2) - IR nightime lamp;
+#define BTN_PIN1 4  // pushbutton 1 PIN (GPIO4  D2) - UV & daytime lamps;
+#define BTN_PIN2 0  // pushbutton 2 PIN (GPIO0  D3) - IR nightime lamp;
 #define BTN1 1
 #define BTN2 2
 ToggleButtonManager _btnManager;
@@ -127,5 +127,3 @@ void setRelay(int num, uint8_t v) {
 
   Serial.println();
 } // END of [setRelay]
-
-
