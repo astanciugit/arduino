@@ -10,22 +10,22 @@
 #define RELAY_PIN4 15  // Relay 4 PIN (GPIO15 D8)
 #define ON  LOW   // Relay ON signal
 #define OFF HIGH  // Relay OFF signal
-bool r1_status = false;
-bool r2_status = false;
-bool r3_status = false;
-bool r4_status = false;
+bool _R1_status = false;
+bool _R2_status = false;
+bool _R3_status = false;
+bool _R4_status = false;
 //=======   /* END OF: RELAY DEFS & VARIABLES */
 
 /* TIMER DEFS & VARIABLES */
 extern "C" {
   #include "user_interface.h"
 }
-os_timer_t myTimer;
-const int _timerDelay = 50;
-const int _timerPeriod = 500;
+os_timer_t _myTimer;
 int _timerCounter = 0;
 bool _tickOccured = false;
 bool _ledStatus = false;
+const int _timerDelay = 50;
+const int _ledDelay = 500;
 //=======   /* END OF: TIMER DEFS & VARIABLES */
 
 /* BUTTONS DEFS & VARIABLES */
@@ -55,8 +55,8 @@ void setup() {
   _btnManager.registerButton(BTN1, BTN_PIN1, handleButton);
   _btnManager.registerButton(BTN2, BTN_PIN2, handleButton);
 
-  os_timer_setfn(&myTimer, (os_timer_func_t *)timerCallback, NULL);
-  os_timer_arm(&myTimer, _timerDelay, true);
+  os_timer_setfn(&_myTimer, (os_timer_func_t *)timerCallback, NULL);
+  os_timer_arm(&_myTimer, _timerDelay, true);
   Serial.println("Timer was setup successfull...");
 }
 
@@ -71,7 +71,7 @@ void loop() {
 void timerCallback(void *pArg) {
   os_intr_lock();
     ++_timerCounter;
-    if (_timerCounter * _timerDelay >= _timerPeriod) {
+    if (_timerCounter * _timerDelay >= _ledDelay) {
       _timerCounter = 0;
       _tickOccured = true;
       _ledStatus = !_ledStatus;
@@ -100,22 +100,22 @@ void setRelay(int num, uint8_t v) {
 
   switch (num) {
     case 1:
-      r1_status = v;
+      _R1_status = v;
       digitalWrite(RELAY_PIN1, v);
       Serial.print(v);
       break;
     case 2:
-      r2_status = v;
+      _R2_status = v;
       digitalWrite(RELAY_PIN2, v);
       Serial.print(v);
       break;
     case 3:
-      r3_status = v;
+      _R3_status = v;
       digitalWrite(RELAY_PIN3, v);
       Serial.print(v);
       break;
     case 4:
-      r4_status = v;
+      _R4_status = v;
       digitalWrite(RELAY_PIN4, v);
       Serial.print(v);
       break;
