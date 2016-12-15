@@ -29,8 +29,8 @@ bool _ledStatus = false;
 //=======   /* END OF: TIMER DEFS & VARIABLES */
 
 /* BUTTONS DEFS & VARIABLES */
-#define BTN_PIN1 5  // pushbutton 1 PIN (GPIO0  D3) - UV & daytime lamps;
-#define BTN_PIN2 4  // pushbutton 2 PIN (GPIO2  D4) - IR nightime lamp;
+#define BTN_PIN1 5  // pushbutton 1 PIN (GPIO5  D1) - UV & daytime lamps;
+#define BTN_PIN2 4  // pushbutton 2 PIN (GPIO4  D2) - IR nightime lamp;
 #define BTN1 1
 #define BTN2 2
 ToggleButtonManager _btnManager;
