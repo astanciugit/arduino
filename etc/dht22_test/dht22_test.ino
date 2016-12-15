@@ -1,6 +1,6 @@
 #include "DHT.h"
 
-#define DHTPIN 2          // DHT PIN (GPIO2 D4)
+#define DHTPIN 3          // DHT PIN (GPIO3 D9)
 #define DHTTYPE DHT22     // DHT 22  (AM2302), AM2321
 //#define DHTTYPE DHT11   // DHT 11
 
@@ -19,7 +19,7 @@ void setup() {
 void loop() {
   check_temperature();
   debugPrintTemperature();
-  delay(500);
+  delay(2000);
 }
 
 void check_temperature() {

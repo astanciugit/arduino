@@ -9,7 +9,9 @@
 // Initialize the OLED display using brzo_i2c
 // D3 -> SDA
 // D4 -> SCL
-SSD1306Brzo _display(0x3c, D1, D2);
+#define SDA_PIN D3
+#define SCL_PIN D4
+SSD1306Brzo _display(0x3c, SDA_PIN, SCL_PIN);
 OLEDDisplayUi ui ( &_display );
 int screenW = 128;
 int screenH = 64;
@@ -49,7 +51,7 @@ unsigned int _dhtDelayCounter = 0;  // DHT module timer last value, milliseconds
 // ===========   END OFTIMER COUNTERS
 
 // ===========   DHT22 DEFINITION
-#define DHTPIN 2          // DHT PIN (GPIO2 D4)
+#define DHTPIN 3          // DHT PIN (GPIO3 D9)
 #define DHTTYPE DHT22     // DHT 22  (AM2302), AM2321
 DHT dht(DHTPIN, DHTTYPE);
 unsigned int _dhtDelay = 5000;
