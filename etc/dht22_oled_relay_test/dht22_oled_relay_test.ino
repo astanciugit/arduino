@@ -48,6 +48,9 @@ bool _R4_status = false;
 //=======   /* END OF: RELAY DEFS & VARIABLES */
 
 /* BUTTONS DEFS & VARIABLES */
+// Toggle buttons logic: button pins should be pulled up (resistor 10kOhm on +5V);
+// Button will be pressed on 0 (resistor 10kOhm on Gnd) and released on 1 (resistor 10kOhm on +5V);
+// Pressing timout should be not less that 50 ms (variable   _buttonDelay);
 #define BTN_PIN1 5  // pushbutton 1 PIN (GPIO5  D1) - UV & daytime lamps;
 #define BTN_PIN2 4  // pushbutton 2 PIN (GPIO4  D2) - IR nightime lamp;
 #define BTN1 1
@@ -64,14 +67,14 @@ bool _tickOccured;
 bool _ledStatus = false;
 unsigned int _timerDelay = 50;
 unsigned int _ledDelay = 500;
-unsigned int _relayDelay = 50;
+unsigned int _buttonDelay = 50;
 // ===========   END OF TIMER 
 
 // ===========   TIMER COUNTERS
 unsigned int _ms = 0;   // timer last checked value, milliseconds
 unsigned int _ledDelayCounter = 0;  // LED timer last value, milliseconds
 unsigned int _dhtDelayCounter = 0;  // DHT module timer last value, milliseconds
-unsigned int _relayDelayCounter = 0;  // RELAY module timer last value, milliseconds
+unsigned int _buttonDelayCounter = 0;  // RELAY module timer last value, milliseconds
 // ===========   END OFTIMER COUNTERS
 
 // ===========   DHT22 DEFINITION
@@ -169,8 +172,8 @@ void loop() {
         debugPrintTemperature();
       }
 
-      if ((_ms - _relayDelayCounter) >= _relayDelay) {
-        _relayDelayCounter = _ms;
+      if ((_ms - _buttonDelayCounter) >= _buttonDelay) {
+        _buttonDelayCounter = _ms;
         _btnManager.checkStatuses();
         check_button();
       }
