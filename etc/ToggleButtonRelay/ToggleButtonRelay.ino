@@ -21,12 +21,18 @@ extern "C" {
   #include "user_interface.h"
 }
 os_timer_t _myTimer;
-int _timerCounter = 0;
 bool _tickOccured = false;
 bool _ledStatus = false;
 const int _timerDelay = 50;
 const int _ledDelay = 500;
+unsigned int _relayDelay = 50;
 //=======   /* END OF: TIMER DEFS & VARIABLES */
+
+// ===========   TIMER COUNTERS
+unsigned int _ms = 0;   // timer last checked value, milliseconds
+unsigned int _ledDelayCounter = 0;  // LED timer last value, milliseconds
+unsigned int _relayDelayCounter = 0;  // RELAY module timer last value, milliseconds
+// ===========   END OFTIMER COUNTERS
 
 /* BUTTONS DEFS & VARIABLES */
 #define BTN_PIN1 5  // pushbutton 1 PIN (GPIO5  D1) - UV & daytime lamps;
@@ -61,25 +67,46 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  check_button();
-  delay(250);
+  if (_tickOccured == true) {
+    _tickOccured = false;
+
+      if ((_ms - _ledDelayCounter) >= _ledDelay) {
+        _ledStatus = !_ledStatus;
+        _ledDelayCounter = _ms;
+        digitalWrite(LED_BUILTIN, _ledStatus ? HIGH : LOW);
+      }
+
+      if ((_ms - _relayDelayCounter) >= _relayDelay) {
+        _relayDelayCounter = _ms;
+        _btnManager.checkStatuses();
+        check_button();
+      }
+  }
+
+  yield();  // or delay(0);
 }
 
 // start of timerCallback
 // NOTE: do not use Serial.println() in callback function
 void timerCallback(void *pArg) {
   os_intr_lock();
-    ++_timerCounter;
-    if (_timerCounter * _timerDelay >= _ledDelay) {
-      _timerCounter = 0;
-      _tickOccured = true;
-      _ledStatus = !_ledStatus;
-      _btnManager.checkStatuses();
-      digitalWrite(LED_BUILTIN, _ledStatus);
-    }
+    _tickOccured = true;
+    checkTimer();
   os_intr_unlock();
 } // End of [timerCallback]
+
+void checkTimer() {
+  // Milliseconds will overflow (go back to zero), after approximately 50 days.
+  // https://www.arduino.cc/en/Reference/Millis
+  unsigned int ms = millis();
+  if (ms - _ms < 0 || _ms == 0) {
+    _ms = ms;
+    _ledDelayCounter = _ms;
+    _relayDelayCounter = _ms;
+  } else {
+    _ms = ms;
+  }
+} // End of [checkTimer]
 
 void handleButton(int id, bool val) {
   uint8_t v = val ? ON : OFF;
