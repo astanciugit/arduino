@@ -4,8 +4,9 @@ ToggleButtonManager::ToggleButtonManager()
 {
 }
 
-void ToggleButtonManager::init(int capacity)
+void ToggleButtonManager::init(unsigned int capacity, unsigned int debounceDelay)
 {
+	_debounceDelay = debounceDelay;
 }
 
 void ToggleButtonManager::registerButton(int id, int pin)
@@ -39,11 +40,11 @@ void ToggleButtonManager::checkStatuses()
 		int reading = digitalRead(btn->_pin);
   		if (reading != btn->_lastButtonState)
 		{
-			lastDebounceTime = millis();
+			_lastDebounceTime = millis();
 			btn->_canProcessButtonState = reading;
 		}
 
-	  	if (btn->_canProcessButtonState && (millis() - lastDebounceTime) > debounceDelay)
+	  	if (btn->_canProcessButtonState && (millis() - _lastDebounceTime) > _debounceDelay)
 		{
 			if (reading)
 			{

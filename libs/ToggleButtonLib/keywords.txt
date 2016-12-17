@@ -1,7 +1,17 @@
---- keywords.txt ---
+###########################################
+# Syntax Coloring Map For ToggleButton library
+###########################################
+
+###########################################
+# Datatypes (KEYWORD1)
+###########################################
 ToggleButtonManager	KEYWORD1
+
+###########################################
+# Methods and Functions (KEYWORD2)
+###########################################
 init	KEYWORD2
-registerButton	KEYWORD3
-checkStatuses	KEYWORD4
-getButtonStatus	KEYWORD5
+registerButton	KEYWORD2
+checkStatuses	KEYWORD2
+getButtonStatus	KEYWORD2
 ---

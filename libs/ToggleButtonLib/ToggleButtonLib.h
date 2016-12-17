@@ -13,17 +13,16 @@ class ToggleButtonManager
 {
 	public:
 		ToggleButtonManager();
-		void init(int capacity);
+		void init(unsigned int capacity, unsigned int debounceDelay);
 		void registerButton(int id, int pin);
 		void registerButton(int id, int pin, void (*f)(int, bool));
 		void checkStatuses();
 		bool getButtonStatus(int id);
 
-		unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
-		unsigned const long debounceDelay = 50;    // the debounce time; increase if the output flickers
-
 	private:
-		int const _capacity = 4;
+		unsigned int const _capacity = 4;
+		unsigned int _debounceDelay = 50;    // the debounce time; increase if the output flickers
+		unsigned long _lastDebounceTime = 0;  // the last time the output pin was toggled
 		int _counter = 0;
 		ToggleButton *_buttons[4] = {};
 };
