@@ -67,7 +67,7 @@ bool _tickOccured;
 bool _ledStatus = false;
 unsigned int _timerDelay = 50;
 unsigned int _ledDelay = 500;
-unsigned int _buttonDelay = 50;
+unsigned int CONST_DEBOUNCE_DELAY = 50;
 // ===========   END OF TIMER 
 
 // ===========   TIMER COUNTERS
@@ -101,7 +101,7 @@ void setup() {
   setRelay(3, OFF);
   setRelay(4, OFF);
 
-  _btnManager.init(2);
+  _btnManager.init(2, CONST_DEBOUNCE_DELAY);
   _btnManager.registerButton(BTN1, BTN_PIN1, handleButton);
   _btnManager.registerButton(BTN2, BTN_PIN2, handleButton);
 
@@ -159,23 +159,19 @@ void loop() {
 
     if (_tickOccured == true) {
       _tickOccured = false;
+      _btnManager.checkStatuses();
   
       if ((_ms - _ledDelayCounter) >= _ledDelay) {
         _ledStatus = !_ledStatus;
         _ledDelayCounter = _ms;
         digitalWrite(LED_BUILTIN, _ledStatus ? HIGH : LOW);
+        check_button();
       }
   
       if ((_ms - _dhtDelayCounter) >= _dhtDelay) {
         _dhtDelayCounter = _ms;
         check_temperature();
         debugPrintTemperature();
-      }
-
-      if ((_ms - _buttonDelayCounter) >= _buttonDelay) {
-        _buttonDelayCounter = _ms;
-        _btnManager.checkStatuses();
-        check_button();
       }
     }
   }
